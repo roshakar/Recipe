@@ -1,11 +1,14 @@
 package model;
 
+import java.util.Set;
+
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Lob;
+import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 
 @Entity
@@ -22,8 +25,10 @@ public class Recipe {
 	private String source;
 	private String url;
 	private String directions;
-	// TODO add
-	// private Difficulty difficulty
+	private Difficulty difficulty;
+
+	@OneToMany(mappedBy = "recipe", cascade = CascadeType.ALL)
+	private Set<Ingredient> ingredients;
 
 	// Expects to be stored as a BLOB in the DB
 	@Lob
@@ -94,6 +99,22 @@ public class Recipe {
 
 	public void setDirections(String directions) {
 		this.directions = directions;
+	}
+
+	public Difficulty getDifficulty() {
+		return difficulty;
+	}
+
+	public void setDifficulty(Difficulty difficulty) {
+		this.difficulty = difficulty;
+	}
+
+	public Set<Ingredient> getIngredients() {
+		return ingredients;
+	}
+
+	public void setIngredients(Set<Ingredient> ingredients) {
+		this.ingredients = ingredients;
 	}
 
 	public Byte[] getImage() {
