@@ -1,4 +1,4 @@
-package model;
+package com.rosh.akar.model;
 
 import java.math.BigDecimal;
 
