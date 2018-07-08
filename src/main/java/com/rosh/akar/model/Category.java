@@ -10,9 +10,11 @@ import javax.persistence.Id;
 import javax.persistence.ManyToMany;
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
-@Entity
 @Data
+@EqualsAndHashCode(exclude = { "recipes" })
+@Entity
 public class Category {
 
 	@Id
