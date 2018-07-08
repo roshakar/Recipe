@@ -19,6 +19,9 @@ import com.rosh.akar.repositories.CategoryRepository;
 import com.rosh.akar.repositories.RecipeRepository;
 import com.rosh.akar.repositories.UnitOfMeasureRepository;
 
+import lombok.extern.slf4j.Slf4j;
+
+@Slf4j
 @Component
 public class RecipeBootstrap implements ApplicationListener<ContextRefreshedEvent> {
 
@@ -35,14 +38,17 @@ public class RecipeBootstrap implements ApplicationListener<ContextRefreshedEven
 
 	@Override
 	public void onApplicationEvent(ContextRefreshedEvent event) {
+		log.debug("ContextRefreshedEvent received... saving recipes to database.");
 		recipeRepository.saveAll(getRecipes());
 	}
 
 	private List<Recipe> getRecipes() {
+		log.debug("Inside of bootstrap getRecipes()");
 
 		List<Recipe> recipes = new ArrayList<Recipe>(2);
 
 		// Get Units of Measure
+		log.debug("Getting units of measure optionals.");
 		Optional<UnitOfMeasure> eachUomOptional = unitOfMeasureRepository.findByDescription("Each");
 
 		if (!eachUomOptional.isPresent()) {
@@ -79,6 +85,7 @@ public class RecipeBootstrap implements ApplicationListener<ContextRefreshedEven
 			throw new RuntimeException("Expected UOM Not Found");
 		}
 
+		log.debug("Getting units of measure from optionals");
 		// Get Optionals
 		UnitOfMeasure eachUom = eachUomOptional.get();
 		UnitOfMeasure tablespoonUom = tablespoonUomOptional.get();
@@ -87,6 +94,7 @@ public class RecipeBootstrap implements ApplicationListener<ContextRefreshedEven
 		UnitOfMeasure pintUom = pintUomOptional.get();
 		UnitOfMeasure cupsUom = cupsUomOptional.get();
 
+		log.debug("Getting category optionals.");
 		// Get Categories
 		Optional<Category> americanCategoryOptional = categoryRepository.findByDescription("American");
 
@@ -100,10 +108,12 @@ public class RecipeBootstrap implements ApplicationListener<ContextRefreshedEven
 			throw new RuntimeException("Expected UOM Not Found");
 		}
 
+		log.debug("Getting categories from optionals.");
 		// Get Optionals
 		Category americanCategory = americanCategoryOptional.get();
 		Category mexicanCategory = mexicanCategoryOptional.get();
 
+		log.debug("Initializing recipes and related notes.");
 		// Guac
 		Recipe guacRecipe = new Recipe();
 		guacRecipe.setDescription("Perfect Guacamole");
@@ -213,6 +223,7 @@ public class RecipeBootstrap implements ApplicationListener<ContextRefreshedEven
 
 		recipes.add(tacoRecipe);
 
+		log.debug("bootstrap getRecipes() method complete.");
 		return recipes;
 	}
 
