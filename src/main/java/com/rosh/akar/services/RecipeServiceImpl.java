@@ -5,7 +5,11 @@ import java.util.Optional;
 import java.util.Set;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import com.rosh.akar.commands.RecipeCommand;
+import com.rosh.akar.converters.RecipeCommandToRecipe;
+import com.rosh.akar.converters.RecipeToRecipeCommand;
 import com.rosh.akar.model.Recipe;
 import com.rosh.akar.repositories.RecipeRepository;
 
@@ -16,9 +20,14 @@ import lombok.extern.slf4j.Slf4j;
 public class RecipeServiceImpl implements RecipeService {
 
 	private final RecipeRepository recipeRepository;
+	private final RecipeCommandToRecipe recipeCommandToRecipe;
+	private final RecipeToRecipeCommand recipeToRecipeCommand;
 
-	public RecipeServiceImpl(RecipeRepository recipeRepository) {
+	public RecipeServiceImpl(RecipeRepository recipeRepository, RecipeCommandToRecipe recipeCommandToRecipe,
+			RecipeToRecipeCommand recipeToRecipeCommand) {
 		this.recipeRepository = recipeRepository;
+		this.recipeCommandToRecipe = recipeCommandToRecipe;
+		this.recipeToRecipeCommand = recipeToRecipeCommand;
 	}
 
 	@Override
@@ -39,6 +48,16 @@ public class RecipeServiceImpl implements RecipeService {
 		}
 
 		return recipeOptional.get();
+	}
+
+	@Override
+	@Transactional
+	public RecipeCommand saveRecipe(RecipeCommand recipeCommand) {
+		Recipe recipe = recipeCommandToRecipe.convert(recipeCommand);
+
+		recipe = recipeRepository.save(recipe);
+		log.debug("Saved recipe with Id: " + recipe.getId());
+		return recipeToRecipeCommand.convert(recipe);
 	}
 
 }

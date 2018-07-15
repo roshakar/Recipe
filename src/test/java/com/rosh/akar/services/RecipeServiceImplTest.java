@@ -18,6 +18,8 @@ import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
+import com.rosh.akar.converters.RecipeCommandToRecipe;
+import com.rosh.akar.converters.RecipeToRecipeCommand;
 import com.rosh.akar.model.Recipe;
 import com.rosh.akar.repositories.RecipeRepository;
 
@@ -27,12 +29,18 @@ public class RecipeServiceImplTest {
 
 	@Mock
 	RecipeRepository recipeRepository;
+	
+	@Mock
+	RecipeCommandToRecipe recipeCommandToRecipe;
+	
+	@Mock
+	RecipeToRecipeCommand recipeToRecipeCommand;
 
 	@Before
 	public void setUp() throws Exception {
 		MockitoAnnotations.initMocks(this);
 
-		recipeService = new RecipeServiceImpl(recipeRepository);
+		recipeService = new RecipeServiceImpl(recipeRepository, recipeCommandToRecipe, recipeToRecipeCommand);
 	}
 
 	@Test
@@ -48,6 +56,7 @@ public class RecipeServiceImplTest {
 
 		assertEquals(recipes.size(), 1);
 		verify(recipeRepository, times(1)).findAll();
+		verify(recipeRepository, never()).findById(anyLong());
 	}
 
 	@Test
