@@ -7,4 +7,6 @@ import com.rosh.akar.model.Recipe;
 public interface RecipeService {
 
 	public Set<Recipe> getRecipes();
+
+	public Recipe findById(long id);
 }
