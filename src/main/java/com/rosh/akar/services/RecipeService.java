@@ -7,7 +7,13 @@ import com.rosh.akar.model.Recipe;
 
 public interface RecipeService {
 
-	public Set<Recipe> getRecipes();
-	public Recipe findById(long id);
-	public RecipeCommand saveRecipe(RecipeCommand recipeCommand);
+	Set<Recipe> getRecipes();
+
+	Recipe findById(long id);
+
+	RecipeCommand saveRecipe(RecipeCommand recipeCommand);
+
+	RecipeCommand findCommandById(Long id);
+
+	void deleteById(Long id);
 }

@@ -2,6 +2,7 @@ package com.rosh.akar.services;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
@@ -18,6 +19,7 @@ import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
+import com.rosh.akar.commands.RecipeCommand;
 import com.rosh.akar.converters.RecipeCommandToRecipe;
 import com.rosh.akar.converters.RecipeToRecipeCommand;
 import com.rosh.akar.model.Recipe;
@@ -72,6 +74,33 @@ public class RecipeServiceImplTest {
 		assertNotNull("Null recipe returned.", result);
 		verify(recipeRepository, times(1)).findById(anyLong());
 		verify(recipeRepository, never()).findAll();
+	}
+
+	@Test
+	public void getRecipeCommandByIdTest() throws Exception {
+		Recipe recipe = new Recipe();
+		recipe.setId(1l);
+		Optional<Recipe> recipeOptional = Optional.of(recipe);
+
+		when(recipeRepository.findById(anyLong())).thenReturn(recipeOptional);
+
+		RecipeCommand recipeCommand = new RecipeCommand();
+		recipeCommand.setId(1l);
+
+		when(recipeToRecipeCommand.convert(any())).thenReturn(recipeCommand);
+
+		RecipeCommand commandById = recipeService.findCommandById(1l);
+
+		verify(recipeRepository, times(1)).findById(anyLong());
+		verify(recipeRepository, never()).findAll();
+	}
+
+	@Test
+	public void testDeleteById() throws Exception {
+		Long idToDelete = Long.valueOf(2l);
+		recipeService.deleteById(idToDelete);
+
+		verify(recipeRepository, times(1)).deleteById(anyLong());
 	}
 
 }
